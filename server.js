@@ -1,9 +1,8 @@
 require("dotenv").config();
-const PORT = process.env.PORT || 4000;
-
 const express = require("express");
 const scrapeRoutes = require("./routes/scrapeRoutes");
 
+const PORT = process.env.PORT || 4000;
 const app = express();
 
 // Middleware
@@ -13,7 +12,10 @@ app.use((req, res, next) => {
   next();
 });
 
-// Redirect /api/scraped → /
+// Handle favicon request
+app.get("/favicon.ico", (req, res) => res.status(204));
+
+// Redirect root to /api/scraped
 app.get("/", (req, res) => {
   res.redirect("/api/scraped");
 });

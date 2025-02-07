@@ -4,12 +4,8 @@ const scrape = async (req, res) => {
   try {
     const url = "https://jiji.com.gh/agriculture-and-foodstuff";
 
-    // Launch Puppeteer with custom executable path
     const browser = await puppeteer.launch({
       headless: "new",
-      executablePath:
-        process.env.PUPPETEER_EXECUTABLE_PATH ||
-        "/usr/bin/google-chrome-stable",
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
     });
 
