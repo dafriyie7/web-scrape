@@ -6,17 +6,22 @@ const scrapeRoutes = require("./routes/scrapeRoutes");
 
 const app = express();
 
-// middleware
+// Middleware
 app.use(express.json());
 app.use((req, res, next) => {
   console.log(req.path, req.method);
   next();
 });
 
-// routes
-app.use("/api/scraped", scrapeRoutes);
+// Redirect /api/scraped → /
+app.get("/api/scraped", (req, res) => {
+  res.redirect("/");
+});
 
-// listen to port
-    app.listen(PORT, () => {
-      console.log(`listening on port: ${PORT}`);
-    })
+// Routes
+app.use("/", scrapeRoutes); // Now your scraper is available at "/"
+
+// Start server
+app.listen(PORT, () => {
+  console.log(`Listening on port: ${PORT}`);
+});
