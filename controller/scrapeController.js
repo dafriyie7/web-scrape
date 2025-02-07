@@ -49,7 +49,6 @@ const scrape = async (req, res) => {
     });
 
     products = products.filter((item) => item.price > 0);
-    products.sort((a, b) => a.price - b.price);
 
     await browser.close();
 
