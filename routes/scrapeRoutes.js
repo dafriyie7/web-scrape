@@ -1,9 +1,9 @@
 const express = require("express");
-const scrape = require("../controller/scrapeController")
+const scrapedData = require("../controller/scrapeController")
 
 const router = express.Router();
 
 // GET all workouts (Scraper route)
-router.get("/api/scraped", scrape);
+router.get("/api/scraped", scrapedData);
 
 module.exports = router;

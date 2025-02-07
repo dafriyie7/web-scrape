@@ -4,17 +4,16 @@ const scrape = async (req, res) => {
   try {
     const url = "https://jiji.com.gh/agriculture-and-foodstuff";
 
-    // Launch Puppeteer
-    const browser = await puppeteer.launch({
-      headless: "new",
-      args: ["--no-sandbox", "--disable-setuid-sandbox"], // Required for cloud deployment
-    });
-
+    // Launch browser
+    const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     await page.goto(url, { waitUntil: "domcontentloaded" });
 
+    // Wait for items to load
     await page.waitForSelector(".b-list-advert__gallery__item");
+    await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 seconds
 
+    // Extract product data
     let products = await page.evaluate(() => {
       return Array.from(
         document.querySelectorAll(".b-list-advert__gallery__item")
@@ -25,18 +24,19 @@ const scrape = async (req, res) => {
           ? locationMatch[1].replace(/-/g, " ")
           : "N/A";
 
+        // Extract and clean price
         let priceText =
           product.querySelector(".qa-advert-price")?.textContent.trim() ||
           "N/A";
-        let price = parseFloat(priceText.replace(/[^\d]/g, "")) || 0; // Removes non-numeric characters
+        let price = parseFloat(priceText.replace(/[^\d.]/g, "")) || 0; // Remove non-numeric characters
 
         return {
           name:
             product
               .querySelector(".b-advert-title-inner")
               ?.textContent.trim() || "N/A",
-          priceText,
-          price,
+          priceText, // Keep original price for display
+          price, // Numeric price for sorting
           description:
             product
               .querySelector(".b-list-advert-base__description-text")
@@ -48,19 +48,13 @@ const scrape = async (req, res) => {
       });
     });
 
-    products = products.filter((item) => item.price > 0);
-
+    // Close browser before responding
     await browser.close();
 
-    // Send JSON response
-    res.json(products);
+    return res.status(200).json(products);
   } catch (error) {
     console.error("Scraping error:", error);
-    res.status(500).json({
-      success: false,
-      message: "Scraping failed",
-      error: error.message,
-    });
+    return res.status(500).json({ error: "Scraping failed" });
   }
 };
 
