@@ -3,13 +3,10 @@ const puppeteer = require("puppeteer");
 (async () => {
   const url = "https://jiji.com.gh/agriculture-and-foodstuff";
 
-  // Launch browser
+  // Launch Puppeteer
   const browser = await puppeteer.launch({
     headless: "new",
-    args: ["--no-sandbox", "--disable-setuid-sandbox"],
-    executablePath:
-      process.env.PUPPETEER_EXECUTABLE_PATH ||
-      (await puppeteer.executablePath()),
+    args: ["--no-sandbox", "--disable-setuid-sandbox"], // Needed for Render deployment
   });
 
   const page = await browser.newPage();
