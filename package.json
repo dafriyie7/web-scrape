@@ -1,12 +1,12 @@
 {
   "dependencies": {
     "puppeteer": "^24.2.0",
-    "postinstall": "npx puppeteer browsers install chrome"
   },
   "devDependencies": {
     "nodemon": "^3.1.9"
   },
   "scripts": {
-    "dev": " nodemon server.js"
+    "dev": " nodemon server.js",
+    "postinstall": "npx puppeteer browsers install chrome"
   }
 }
