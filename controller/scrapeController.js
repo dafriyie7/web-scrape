@@ -53,7 +53,7 @@ const scrape = async (req, res) => {
     await browser.close();
 
     // Send JSON response
-    res.json({ success: true, products });
+    res.json(products);
   } catch (error) {
     console.error("Scraping error:", error);
     res.status(500).json({
