@@ -1,53 +1,22 @@
-const puppeteer = require("puppeteer");
+require("dotenv").config();
+const PORT = process.env.PORT || 4000;
 
-(async () => {
-  const url = "https://jiji.com.gh/agriculture-and-foodstuff";
+const express = require("express");
+const scrapeRoutes = require("./routes/scrapeRoutes");
 
-  // Launch Puppeteer
-  const browser = await puppeteer.launch({
-    headless: "new",
-    args: ["--no-sandbox", "--disable-setuid-sandbox"], // Required for cloud deployment
-  });
+const app = express();
 
-  const page = await browser.newPage();
-  await page.goto(url, { waitUntil: "domcontentloaded" });
+// middleware
+app.use(express.json());
+app.use((req, res, next) => {
+  console.log(req.path, req.method);
+  next();
+});
 
-  await page.waitForSelector(".b-list-advert__gallery__item");
+// routes
+app.use("/api/scraped", scrapeRoutes);
 
-  let products = await page.evaluate(() => {
-    return Array.from(
-      document.querySelectorAll(".b-list-advert__gallery__item")
-    ).map((product) => {
-      const link = product.querySelector("a")?.href || "N/A";
-      const locationMatch = link.match(/jiji\.com\.gh\/([^/]+)/);
-      const location = locationMatch
-        ? locationMatch[1].replace(/-/g, " ")
-        : "N/A";
-
-      let priceText =
-        product.querySelector(".qa-advert-price")?.textContent.trim() || "N/A";
-      let price = parseFloat(priceText.replace(/[^\d]/g, "")) || 0; // Removes non-numeric characters
-
-      return {
-        name:
-          product.querySelector(".b-advert-title-inner")?.textContent.trim() ||
-          "N/A",
-        priceText,
-        price,
-        description:
-          product
-            .querySelector(".b-list-advert-base__description-text")
-            ?.textContent.trim() || "N/A",
-        image: product.querySelector("img")?.src || "N/A",
-        location,
-        link,
-      };
-    });
-  });
-
-  products = products.filter((item) => item.price > 0);
-  products.sort((a, b) => a.price - b.price);
-
-  console.log(products);
-  await browser.close();
-})();
+// listen to port
+    app.listen(PORT, () => {
+      console.log(`listening on port: ${PORT}`);
+    })
