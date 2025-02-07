@@ -14,8 +14,8 @@ app.use((req, res, next) => {
 });
 
 // Redirect /api/scraped → /
-app.get("/api/scraped", (req, res) => {
-  res.redirect("/");
+app.get("/", (req, res) => {
+  res.redirect("/api/scraped");
 });
 
 // Routes
