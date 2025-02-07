@@ -4,7 +4,7 @@ const puppeteer = require("puppeteer");
 const router = express.Router();
 
 // GET all workouts (Scraper route)
-router.get("/", async (req, res) => {
+router.get("/api/scraped", async (req, res) => {
   try {
     const url = "https://jiji.com.gh/agriculture-and-foodstuff";
 

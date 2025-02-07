@@ -19,7 +19,7 @@ app.get("/", (req, res) => {
 });
 
 // Routes
-app.use("/", scrapeRoutes); // Now your scraper is available at "/"
+app.use("/", scrapeRoutes);
 
 // Start server
 app.listen(PORT, () => {
